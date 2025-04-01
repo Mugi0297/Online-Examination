@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Home</title>
+    <script>
+        function showWelcomeMessage() {
+            let username = document.getElementById("username").textContent;
+            alert("Welcome, " + username + "!");
+        }
+        window.onload = showWelcomeMessage;
+    </script>
+</head>
+<body>
+    <h2>Welcome to the Exam Portal</h2>
+    <p>Logged in as: <span id="username" th:text="${username}"></span></p>
+    
+    <a href="/logout">Logout</a>
+</body>
+</html>
