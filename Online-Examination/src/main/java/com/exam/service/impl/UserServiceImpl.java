@@ -1,5 +1,6 @@
 package com.exam.service.impl;
 
+import com.exam.model.Role;
 import com.exam.model.User;
 import com.exam.repository.UserRepository;
 import com.exam.service.UserService;
@@ -29,10 +30,18 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User registerUser(User user) {
+        // Encode the password
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         user.setVerified(false);
         user.setVerificationCode(UUID.randomUUID().toString());
         user.setExpiryTime(LocalDateTime.now().plusMinutes(10)); // 10 min expiry
+
+        // Ensure role is set properly
+        if (user.getRole() == null) {
+            user.setRole(Role.USER); // Default to USER
+        }
+        
+        System.out.println("Registering user with role: " + user.getRole()); // Debugging statement
         userRepository.save(user);
         sendVerificationEmail(user);
         return user;
@@ -71,11 +80,8 @@ public class UserServiceImpl implements UserService {
         return false;
     }
 
-	@Override
-	public User findByEmail(String email) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-   
+    @Override
+    public User findByEmail(String email) {
+        return userRepository.findByEmail(email);
+    }
 }

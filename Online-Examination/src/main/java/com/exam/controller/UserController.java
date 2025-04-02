@@ -4,9 +4,12 @@ import com.exam.model.User;
 import com.exam.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Collection;
 
 @Controller
 public class UserController {
@@ -50,6 +53,21 @@ public class UserController {
     @GetMapping("/home")
     public String home(Authentication authentication, Model model) {
         model.addAttribute("username", authentication.getName());
-        return "home";
+
+        // Check role and redirect accordingly
+        Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
+        for (GrantedAuthority authority : authorities) {
+            if (authority.getAuthority().equals("ROLE_ADMIN")) {
+                return "redirect:/admin/dashboard"; // Admin goes to Admin Dashboard
+            }
+        }
+
+        return "home"; // Regular users go to Home
+    }
+
+    @GetMapping("/admin/dashboard")
+    public String showAdminDashboard(Model model) {
+        model.addAttribute("message", "Welcome, Admin!");
+        return "admin-dashboard";
     }
 }

@@ -7,10 +7,13 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+
+import java.util.Collection;
 
 @Configuration
 public class SecurityConfig {
@@ -27,12 +30,24 @@ public class SecurityConfig {
             .csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/", "/register", "/verify", "/login", "/css/**", "/js/**").permitAll()
+                .requestMatchers("/admin/**").hasRole("ADMIN") // Only admins can access /admin/**
                 .anyRequest().authenticated()
             )
             .formLogin(login -> login
-                .loginPage("/login").permitAll()
-                .defaultSuccessUrl("/home", true)
+                .loginPage("/login")
+                .loginProcessingUrl("/perform_login")
+                .successHandler((request, response, authentication) -> {
+                    Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
+                    for (GrantedAuthority authority : authorities) {
+                        if (authority.getAuthority().equals("ROLE_ADMIN")) { // Use ROLE_ADMIN
+                            response.sendRedirect("/admin/dashboard");
+                            return;
+                        }
+                    }
+                    response.sendRedirect("/home");
+                })
                 .failureUrl("/login?error=true")
+                .permitAll()
             )
             .logout(logout -> logout
                 .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))

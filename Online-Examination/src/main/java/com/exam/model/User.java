@@ -5,28 +5,27 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "users")
-
 public class User {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long id;
 
-    private String username;
-    private String email;
-    private String password;
-    
-    private boolean verified = false;
-    private String verificationCode;
-    private LocalDateTime expiryTime;
-    
-    public User() {
-		// TODO Auto-generated constructor stub
+	private String username;
+	private String email;
+	private String password;
+	private boolean verified = false;
+	private String verificationCode;
+	private LocalDateTime expiryTime;
+
+	@Enumerated(EnumType.STRING)
+	private Role role; // User role (USER or ADMIN)
+
+	public User() {
 	}
 
 	public User(Long id, String username, String email, String password, boolean verified, String verificationCode,
-			LocalDateTime expiryTime) {
-		super();
+			LocalDateTime expiryTime, Role role) {
 		this.id = id;
 		this.username = username;
 		this.email = email;
@@ -34,8 +33,10 @@ public class User {
 		this.verified = verified;
 		this.verificationCode = verificationCode;
 		this.expiryTime = expiryTime;
+		this.role = role;
 	}
 
+	// Getters and Setters
 	public Long getId() {
 		return id;
 	}
@@ -91,6 +92,12 @@ public class User {
 	public void setExpiryTime(LocalDateTime expiryTime) {
 		this.expiryTime = expiryTime;
 	}
-    
-    
+
+	public Role getRole() {
+		return role;
+	}
+
+	public void setRole(Role role) {
+		this.role = role;
+	}
 }

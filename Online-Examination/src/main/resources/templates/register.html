@@ -1,26 +1,81 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Register</title>
+<title>Register</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+	body {
+		font-family: Arial, sans-serif;
+		text-align: center;
+	}
+	
+	form {
+		display: inline-block;
+		text-align: left;
+		padding: 20px;
+		border: 1px solid #ccc;
+		border-radius: 5px;
+	}
+	
+	input, select, button {
+		margin-top: 5px;
+		width: 100%;
+		padding: 8px;
+	}
+	
+	.message {
+		margin-top: 10px;
+		font-weight: bold;
+	}
+	
+	.success {
+		color: green;
+	}
+	
+	.error {
+		color: red;
+	}
+</style>
 </head>
 <body>
-    <h2>Register</h2>
-    <form action="/register" method="post" th:object="${user}">
-        <label>Username:</label><br>
-        <input type="text" th:field="*{username}" required /><br><br>
 
-        <label>Email:</label><br>
-        <input type="email" th:field="*{email}" required /><br><br>
+	<h2>Register</h2>
 
-        <label>Password:</label><br>
-        <input type="password" th:field="*{password}" required /><br><br>
+	<form action="/register" method="post" th:object="${user}">
+		<fieldset>
+			<legend>Registration Form</legend>
 
-        <button type="submit">Register</button>
-    </form>
+			<label for="username">Username:</label> 
+			<input type="text" id="username" th:field="*{username}" required />
+			<br><br> 
+			
+			<label for="email">Email:</label> 
+			<input type="email" id="email" th:field="*{email}" required />
+			<br><br> 
+			
+			<label for="password">Password:</label> 
+			<input type="password" id="password" th:field="*{password}" required autocomplete="new-password" />
+			<br><br> 
+			
+			<label for="role">Select Role:</label> 
+			<select id="role" th:field="*{role}" required>
+				<option value="USER">User</option>
+				<option value="ADMIN">Admin</option>
+			</select>
+			<br><br>
 
-    <p th:if="${message}" th:text="${message}" style="color: green;"></p>
-    <p th:if="${error}" th:text="${error}" style="color: red;"></p>
-    <br>
-    <a href="/login">Already have an account? Login</a>
+			<button type="submit">Register</button>
+		</fieldset>
+	</form>
+
+	<div class="message">
+		<p th:if="${message}" th:text="${message}" class="success"></p>
+		<p th:if="${error}" th:text="${error}" class="error"></p>
+	</div>
+
+	<br>
+	<a href="/login">Already have an account? Login</a>
+
 </body>
 </html>
